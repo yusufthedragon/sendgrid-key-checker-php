@@ -5,16 +5,13 @@ $argument = $argv[2];
 
 if ($option === '-s') {
     $data = checkKey($argument);
-
-    echo json_encode($data, JSON_PRETTY_PRINT);
+    printResult($data, $argument);
 } elseif ($option === '-f') {
     $fh = fopen($argument, 'r');
 
     while ($apiKey = fgets($fh)) {
         $data = checkKey($apiKey);
-
-        echo json_encode($data, JSON_PRETTY_PRINT);
-        echo PHP_EOL;
+        printResult($data, $apiKey);
     }
 
     fclose($fh);
@@ -49,4 +46,34 @@ function checkKey(string $apiKey) : object
     curl_close($ch);
 
     return json_decode($httpRequest);
+}
+
+/**
+ * Print the output from SendGrid.
+ *
+ * @param  object  $data
+ * @param  string  $apiKey
+ *
+ * @return void
+ */
+function printResult(object $data, string $apiKey) : void
+{
+    if (isset($data->errors)) {
+        echo "------------------------------------------------------------------------------" . PHP_EOL;
+        echo "API Key: " . $apiKey . PHP_EOL;
+        echo PHP_EOL;
+        echo "Result: API Key is Invalid." . PHP_EOL;
+        echo "------------------------------------------------------------------------------" . PHP_EOL;
+
+        return;
+    }
+
+    echo "------------------------------------------------------------------------------" . PHP_EOL;
+    echo "API Key: " . $apiKey . PHP_EOL;
+    echo PHP_EOL;
+    echo "Result: API Key is Valid." . PHP_EOL;
+    echo "Limit: " . $data->total . PHP_EOL;
+    echo "Used: " . $data->used . PHP_EOL;
+    echo "Reset: " . $data->reset_frequency . PHP_EOL;
+    echo "------------------------------------------------------------------------------" . PHP_EOL;
 }

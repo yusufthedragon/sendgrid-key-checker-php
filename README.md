@@ -4,7 +4,7 @@
 PHP v7.2 or Newer
 
 ## Usage
-```
+```bash
 # Single API Key
 php KeyChecker.php -s YOURAPIKEY
 
